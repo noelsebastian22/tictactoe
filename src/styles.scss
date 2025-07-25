@@ -1,1 +1,64 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==== CSS RESET ==== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Inter", sans-serif;
+  background-color: #f5f8fb;
+  color: #333;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+body.light {
+  --primary-bg: #ffffff;
+  --bg: #f5f8fb;
+  --text: #333;
+  --cell-bg: #f0f4f8;
+}
+
+body.dark {
+  --primary-bg: #1f2937;
+  --bg: #1f2937;
+  --text: #f9fafb;
+  --cell-bg: #374151;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s, color 0.3s;
+}

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { TicTacContainerComponent } from './features/tictac/tictac-container/tictac-container.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
+  template: '<app-tictac />',
+  imports: [TicTacContainerComponent],
   styleUrl: './app.scss'
 })
 export class App {

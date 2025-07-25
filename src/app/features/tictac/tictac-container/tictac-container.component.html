@@ -1,0 +1,35 @@
+<section class="game-container">
+  <button (click)="toggleTheme()" class="theme-toggle">
+    Toggle {{ theme() === "light" ? "🌙 Dark" : "☀️ Light" }} Mode
+  </button>
+
+  <h1 class="game-title">Tic-Tac-Toe</h1>
+
+  <div
+    class="status"
+    [ngClass]="{
+      winner: state().winner,
+      draw: state().isDraw,
+      'current-turn': !state().winner && !state().isDraw
+    }"
+  >
+    <ng-container *ngIf="state().winner; else ongoing">
+      🎉 Winner: {{ state().winner }}
+    </ng-container>
+    <ng-template #ongoing>
+      <ng-container *ngIf="!state().isDraw; else draw">
+        ▶️ Current Turn: {{ state().currentPlayer }}
+      </ng-container>
+    </ng-template>
+    <ng-template #draw> 🤝 It's a Draw! </ng-template>
+  </div>
+
+  <app-board
+    [board]="state().board"
+    [winningCells]="state().winningCells"
+    (cellClick)="onCellClick($event.row, $event.col)"
+  >
+  </app-board>
+
+  <button (click)="reset()">Reset</button>
+</section>

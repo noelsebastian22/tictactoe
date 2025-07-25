@@ -1,0 +1,10 @@
+<button
+  class="cell"
+  [ngClass]="{ winner: isWinningCell }"
+  [disabled]="value !== null"
+>
+  <ng-container [ngSwitch]="value">
+    <i *ngSwitchCase="'X'" class="fas fa-xmark icon x-icon"></i>
+    <i *ngSwitchCase="'O'" class="fas fa-circle icon o-icon"></i>
+  </ng-container>
+</button>

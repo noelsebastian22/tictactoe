@@ -1,0 +1,18 @@
+<div class="board" @fadeIn>
+  <ng-container
+    *ngFor="let row of board; let rowIndex = index; trackBy: trackByIndex"
+  >
+    <ng-container
+      *ngFor="let cell of row; let colIndex = index; trackBy: trackByIndex"
+    >
+      <app-cell
+        [row]="rowIndex"
+        [col]="colIndex"
+        [winningCells]="winningCells"
+        [value]="cell"
+        (click)="handleClick(rowIndex, colIndex)"
+      >
+      </app-cell>
+    </ng-container>
+  </ng-container>
+</div>
