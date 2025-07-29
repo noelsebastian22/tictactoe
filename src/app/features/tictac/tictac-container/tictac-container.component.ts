@@ -45,6 +45,15 @@ export class TicTacContainerComponent {
     document.body.className = newTheme; // update global class
   }
 
+  toggleComputerMode() {
+    const newMode = !this.gameService.vsComputer();
+    this.gameService.setVsComputerMode(newMode);
+  }
+
+  isVsComputer(): boolean {
+    return this.gameService.vsComputer();
+  }
+
   launchConfetti(): void {
     const duration = 1 * 1000;
     const animationEnd = Date.now() + duration;

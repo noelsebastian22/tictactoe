@@ -20,6 +20,14 @@ export class GameService {
 
   readonly state = this._state.asReadonly();
 
+  private _vsComputer = signal<boolean>(false);
+  readonly vsComputer = this._vsComputer.asReadonly();
+
+  setVsComputerMode(enabled: boolean): void {
+    this._vsComputer.set(enabled);
+    this.resetGame();
+  }
+
   resetGame(): void {
     this._state.set({
       board: structuredClone(this.emptyBoard),
@@ -56,6 +64,85 @@ export class GameService {
       lastMove: { row, col },
       winningCells,
     });
+
+    if (this._vsComputer() && !winner && !isDraw && nextPlayer === 'O') {
+      setTimeout(() => this.makeComputerMove(), 300);
+    }
+  }
+
+  private makeComputerMove(): void {
+    const current = this._state();
+    const bestMove = this.getBestMove(current.board);
+    if (bestMove) {
+      this.makeMove(bestMove.row, bestMove.col);
+    }
+  }
+
+  private getBestMove(board: Player[][]): { row: number; col: number } | null {
+    let bestScore = -Infinity;
+    let move: { row: number; col: number } | null = null;
+
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (board[r][c] === null) {
+          board[r][c] = 'O';
+          const score = this.minimax(board, 0, false);
+          board[r][c] = null;
+          if (score > bestScore) {
+            bestScore = score;
+            move = { row: r, col: c };
+          }
+        }
+      }
+    }
+    return move;
+  }
+
+  private minimax(
+    board: Player[][],
+    depth: number,
+    isMaximizing: boolean
+  ): number {
+    const result = this.checkWinner(board);
+    if (result !== null) return this.score(result);
+
+    if (isMaximizing) {
+      let best = -Infinity;
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+          if (board[r][c] === null) {
+            board[r][c] = 'O';
+            best = Math.max(best, this.minimax(board, depth + 1, false));
+            board[r][c] = null;
+          }
+        }
+      }
+      return best;
+    } else {
+      let best = Infinity;
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+          if (board[r][c] === null) {
+            board[r][c] = 'X';
+            best = Math.min(best, this.minimax(board, depth + 1, true));
+            board[r][c] = null;
+          }
+        }
+      }
+      return best;
+    }
+  }
+
+  private score(result: Player | 'draw'): number {
+    if (result === 'O') return 1;
+    if (result === 'X') return -1;
+    return 0;
+  }
+  private checkWinner(board: Player[][]): Player | 'draw' | null {
+    const winner = this.checkWinnerWithCoords(board)?.player ?? null;
+    if (winner) return winner;
+    const isDraw = board.flat().every((cell) => cell !== null);
+    return isDraw ? 'draw' : null;
   }
 
   private checkWinnerWithCoords(

@@ -1,7 +1,17 @@
 <section class="game-container">
-  <button (click)="toggleTheme()" class="theme-toggle">
-    Toggle {{ theme() === "light" ? "🌙 Dark" : "☀️ Light" }} Mode
-  </button>
+  <div class="action-buttons">
+    <button (click)="toggleTheme()" class="toggle-btn theme">
+      {{ theme() === "light" ? "🌙" : "☀️" }}
+    </button>
+
+    <button
+      (click)="toggleComputerMode()"
+      class="toggle-btn cpu"
+      [class.active]="isVsComputer()"
+    >
+      {{ isVsComputer() ? "🤖 CPU: ON" : "🙋🏼‍♂️ CPU: OFF" }}
+    </button>
+  </div>
 
   <h1 class="game-title">Tic-Tac-Toe</h1>
 
