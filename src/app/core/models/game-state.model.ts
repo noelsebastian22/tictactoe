@@ -7,4 +7,6 @@ export interface GameState {
   winningCells: { row: number; col: number }[] | null;
   lastMove: { row: number; col: number } | null;
   isDraw: boolean;
+  vsComputer?: boolean;
+  difficulty?: 'easy' | 'hard';
 }

@@ -54,6 +54,13 @@ export class TicTacContainerComponent {
     return this.gameService.vsComputer();
   }
 
+  onDifficultyChange(event: Event) {
+    const selectedLevel = (event.target as HTMLInputElement).value as
+      | 'easy'
+      | 'hard';
+    this.gameService.setDifficulty(selectedLevel);
+  }
+
   launchConfetti(): void {
     const duration = 1 * 1000;
     const animationEnd = Date.now() + duration;

@@ -3,22 +3,25 @@ import { GameState, Player } from '@core/models/game-state.model';
 
 @Injectable({ providedIn: 'root' })
 export class GameService {
-  private readonly emptyBoard: Player[][] = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ];
-
-  private _state = signal<GameState>({
-    board: structuredClone(this.emptyBoard),
-    currentPlayer: 'X',
-    winner: null,
-    isDraw: false,
-    winningCells: null,
-    lastMove: null,
-  });
-
+  private _state = signal<GameState>(this.initialState());
   readonly state = this._state.asReadonly();
+
+  private initialState(): GameState {
+    return {
+      board: Array.from({ length: 3 }, () => Array(3).fill(null)),
+      currentPlayer: 'X',
+      winner: null,
+      isDraw: false,
+      winningCells: null,
+      lastMove: null,
+      vsComputer: false,
+      difficulty: 'easy',
+    };
+  }
+
+  resetGame(): void {
+    this._state.set(this.initialState());
+  }
 
   private _vsComputer = signal<boolean>(false);
   readonly vsComputer = this._vsComputer.asReadonly();
@@ -28,15 +31,8 @@ export class GameService {
     this.resetGame();
   }
 
-  resetGame(): void {
-    this._state.set({
-      board: structuredClone(this.emptyBoard),
-      currentPlayer: 'X',
-      winner: null,
-      isDraw: false,
-      winningCells: null,
-      lastMove: null,
-    });
+  setDifficulty(level: 'easy' | 'hard') {
+    this._state.update((s) => ({ ...s, difficulty: level }));
   }
 
   makeMove(row: number, col: number): void {
@@ -63,6 +59,8 @@ export class GameService {
       isDraw,
       lastMove: { row, col },
       winningCells,
+      vsComputer: current.vsComputer,
+      difficulty: current.difficulty,
     });
 
     if (this._vsComputer() && !winner && !isDraw && nextPlayer === 'O') {
@@ -72,10 +70,30 @@ export class GameService {
 
   private makeComputerMove(): void {
     const current = this._state();
-    const bestMove = this.getBestMove(current.board);
-    if (bestMove) {
-      this.makeMove(bestMove.row, bestMove.col);
+    const difficulty = current.difficulty;
+    const move =
+      difficulty === 'easy'
+        ? this.getRandomMove(current.board)
+        : this.getBestMove(current.board);
+
+    if (move) {
+      this.makeMove(move.row, move.col);
     }
+  }
+
+  private getRandomMove(
+    board: Player[][]
+  ): { row: number; col: number } | null {
+    const empty: { row: number; col: number }[] = [];
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (board[r][c] === null) {
+          empty.push({ row: r, col: c });
+        }
+      }
+    }
+    if (empty.length === 0) return null;
+    return empty[Math.floor(Math.random() * empty.length)];
   }
 
   private getBestMove(board: Player[][]): { row: number; col: number } | null {
