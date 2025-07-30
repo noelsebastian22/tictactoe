@@ -12,8 +12,8 @@
       {{ isVsComputer() ? "🤖 CPU: ON" : "🙋🏼‍♂️ CPU: OFF" }}
     </button>
   </div>
-  <fieldset *ngIf="isVsComputer()" class="difficulty-selector">
-    <legend>Select Difficulty Level:</legend>
+  <fieldset class="difficulty-selector" *ngIf="isVsComputer()">
+    <legend>Select Difficulty:</legend>
 
     <div class="radio-option">
       <input
@@ -21,8 +21,8 @@
         id="easy"
         name="difficulty"
         value="easy"
-        (change)="onDifficultyChange($event)"
         checked
+        (change)="onDifficultyChange($event)"
       />
       <label for="easy">Easy</label>
     </div>
